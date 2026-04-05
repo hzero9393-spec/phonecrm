@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  role      String   @default("admin") // master, admin
+  fullName  String   @default("")
+  mobile    String   @default("")
+  email     String   @default("")
+  createdBy String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Shop {
+  id       String    @id @default(cuid())
+  adminId  String    @unique
+  shopName String    @default("")
+  gstNo    String    @default("")
+  address  String    @default("")
+  phone    String    @default("")
+  logo     String    @default("")
+  updatedAt DateTime  @updatedAt
+}
+
+model Customer {
+  id        String    @id @default(cuid())
+  name      String
+  phone     String    @default("")
+  address   String    @default("")
+  aadharNo  String    @default("")
+  type      String    @default("both") // seller, buyer, both
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  salesAsBuyer Sale[]      @relation("BuyerSales")
+  invoices     Invoice[]   @relation("CustomerInvoices")
+  soldItems    Inventory[] @relation("SellerItems")
+  orders       Order[]
+}
+
+model Inventory {
+  id             String   @id @default(cuid())
+  brand          String
+  model          String
+  ram            String   @default("")
+  storage        String   @default("")
+  color          String   @default("")
+  imeiNo         String   @default("")
+  condition      String   @default("good") // average, good, poor
+  status         String   @default("pending") // pending, complete, done
+  sellerId       String?
+  buyPrice       Float    @default(0)
+  repairRequired Boolean  @default(false)
+  repairDetails  String   @default("")
+  repairCost     Float    @default(0)
+  repairStatus   String   @default("none") // none, pending, in_progress, completed
+  addedAt        DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  seller Customer? @relation("SellerItems", fields: [sellerId], references: [id])
+  sales  Sale[]
+}
+
+model Sale {
+  id             String   @id @default(cuid())
+  inventoryId    String
+  buyerId        String
+  salePrice      Float    @default(0)
+  paymentStatus  String   @default("pending") // full, partial, pending
+  paidAmount     Float    @default(0)
+  pendingAmount  Float    @default(0)
+  warrantyMonths Int      @default(0)
+  saleDate       DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  inventory Inventory @relation(fields: [inventoryId], references: [id])
+  buyer     Customer  @relation("BuyerSales", fields: [buyerId], references: [id])
+  invoices  Invoice[]
+}
+
+model Invoice {
+  id            String   @id @default(cuid())
+  invoiceNo     String   @unique
+  saleId        String
+  customerId    String
+  totalAmount   Float    @default(0)
+  paidAmount    Float    @default(0)
+  pendingAmount Float    @default(0)
+  gstAmount     Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sale     Sale     @relation(fields: [saleId], references: [id])
+  customer Customer @relation("CustomerInvoices", fields: [customerId], references: [id])
+}
+
+model Order {
+  id            String    @id @default(cuid())
+  customerId    String
+  brand         String    @default("")
+  model         String    @default("")
+  advanceAmount Float     @default(0)
+  status        String    @default("pending") // pending, processing, completed, cancelled
+  orderDate     DateTime  @default(now())
+  deliveryDate  DateTime?
+  deliveryBy    String    @default("")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id])
+}
