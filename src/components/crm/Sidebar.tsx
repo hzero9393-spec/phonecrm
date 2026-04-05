@@ -11,6 +11,7 @@ import {
   ShoppingBag,
   Store,
   Shield,
+  UserCircle,
   X,
   LogOut,
 } from 'lucide-react';
@@ -24,6 +25,7 @@ const navItems: { key: Module; label: string; icon: React.ReactNode; roles?: str
   { key: 'orders', label: 'Orders', icon: <ShoppingBag size={20} /> },
   { key: 'shop', label: 'Shop Settings', icon: <Store size={20} /> },
   { key: 'admins', label: 'Admin Users', icon: <Shield size={20} />, roles: ['master'] },
+  { key: 'profile', label: 'My Profile', icon: <UserCircle size={20} /> },
 ];
 
 export default function Sidebar() {
@@ -80,7 +82,16 @@ export default function Sidebar() {
             ))}
         </nav>
 
-        {/* Bottom section */}
+        {/* Profile quick link in bottom section */}
+        <div className="absolute bottom-16 left-0 right-0 px-2">
+          <div
+            className={`crm-nav-item ${currentModule === 'profile' ? 'active' : ''}`}
+            onClick={() => handleNav('profile')}
+          >
+            <UserCircle size={20} />
+            <span>My Profile</span>
+          </div>
+        </div>
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-sidebar-border">
           <div className="flex items-center gap-3 px-2">
             <div className="w-8 h-8 rounded-full bg-[#FF5F00] flex items-center justify-center text-white text-sm font-bold">

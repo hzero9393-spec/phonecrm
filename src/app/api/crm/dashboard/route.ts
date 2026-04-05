@@ -139,15 +139,41 @@ export async function GET() {
       where: { repairRequired: true, repairStatus: 'completed' },
     });
 
-    // ---- 14. Today's stats ----
+    // ---- 14. Today's stats (AAJ cards) ----
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
-    const todaySales = await db.sale.count({ where: { saleDate: { gte: todayStart } } });
-    const todayRevenue = await db.sale.aggregate({
-      where: { saleDate: { gte: todayStart } },
-      _sum: { salePrice: true },
+
+    // Aaj Buy: COUNT + SUM(buy_price) from inventory added today
+    const todayBuyItems = await db.inventory.findMany({
+      where: { addedAt: { gte: todayStart } },
+      select: { buyPrice: true },
     });
-    const todayRevenueAmount = todayRevenue._sum.salePrice ?? 0;
+    const aajBuyCount = todayBuyItems.length;
+    const aajBuyAmount = todayBuyItems.reduce((s, i) => s + i.buyPrice, 0);
+
+    // Aaj Sell: COUNT + SUM(sale_price) from sales today
+    const todaySellItems = await db.sale.findMany({
+      where: { saleDate: { gte: todayStart } },
+      select: { salePrice: true },
+    });
+    const aajSellCount = todaySellItems.length;
+    const aajSellAmount = todaySellItems.reduce((s, i) => s + i.salePrice, 0);
+
+    // Today Profit = (aaj sell amount) - (aaj buy amount)
+    const todayProfit = aajSellAmount - aajBuyAmount;
+
+    // Pending: repair not done + unpaid sales
+    const repairPendingCount = await db.inventory.count({
+      where: { repairRequired: true, repairStatus: { not: 'completed' } },
+    });
+    const unpaidSalesCount = await db.sale.count({
+      where: { paymentStatus: { not: 'full' } },
+    });
+    const totalPendingItems = repairPendingCount + unpaidSalesCount;
+
+    // Legacy compat
+    const todaySales = aajSellCount;
+    const todayRevenueAmount = aajSellAmount;
 
     return NextResponse.json({
       totalCustomers,
@@ -173,6 +199,12 @@ export async function GET() {
       repairCompletedCount,
       todaySales,
       todayRevenue: todayRevenueAmount,
+      aajBuyCount,
+      aajBuyAmount,
+      aajSellCount,
+      aajSellAmount,
+      todayProfit,
+      totalPendingItems,
     });
   } catch (error) {
     console.error('Dashboard stats error:', error);

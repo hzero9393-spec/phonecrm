@@ -19,6 +19,7 @@ export type Module =
   | 'orders'
   | 'shop'
   | 'admins'
+  | 'profile'
   | 'settings';
 
 interface CRMState {

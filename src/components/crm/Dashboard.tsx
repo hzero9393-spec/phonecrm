@@ -74,6 +74,12 @@ interface DashboardStats {
   repairCompletedCount: number;
   todaySales: number;
   todayRevenue: number;
+  aajBuyCount: number;
+  aajBuyAmount: number;
+  aajSellCount: number;
+  aajSellAmount: number;
+  todayProfit: number;
+  totalPendingItems: number;
 }
 
 /* ──────────────────────────── Helpers ──────────────────────────── */
@@ -278,6 +284,87 @@ export default function Dashboard() {
           </div>
         </div>
       </motion.div>
+
+      {/* ═══════ "Aaj" Hero Cards — 2x2 Grid ═══════ */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Aaj Buy */}
+        <motion.div
+          custom={0}
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          className="bg-gradient-to-br from-[#00092C] to-[#0A1A4A] rounded-xl p-5 text-white relative overflow-hidden group cursor-pointer"
+        >
+          <div className="absolute top-0 right-0 w-24 h-24 bg-[#FF5F00]/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-500" />
+          <div className="relative">
+            <span className="text-2xl">📱</span>
+            <p className="text-xs text-[#8892B0] font-medium mt-1">Aaj Buy</p>
+            <p className="text-2xl font-bold mt-0.5">{stats.aajBuyCount}</p>
+            <p className="text-xs text-[#0FA968] font-semibold mt-1">{formatINR(stats.aajBuyAmount)}</p>
+          </div>
+        </motion.div>
+
+        {/* Aaj Sell */}
+        <motion.div
+          custom={1}
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          className="bg-gradient-to-br from-[#0A1A4A] to-[#1A2560] rounded-xl p-5 text-white relative overflow-hidden group cursor-pointer"
+        >
+          <div className="absolute top-0 right-0 w-24 h-24 bg-[#0FA968]/15 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-500" />
+          <div className="relative">
+            <span className="text-2xl">💰</span>
+            <p className="text-xs text-[#8892B0] font-medium mt-1">Aaj Sell</p>
+            <p className="text-2xl font-bold mt-0.5">{stats.aajSellCount}</p>
+            <p className="text-xs text-[#0FA968] font-semibold mt-1">{formatINR(stats.aajSellAmount)}</p>
+          </div>
+        </motion.div>
+
+        {/* Today Profit */}
+        <motion.div
+          custom={2}
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          className={`rounded-xl p-5 text-white relative overflow-hidden group cursor-pointer ${
+            stats.todayProfit >= 0
+              ? 'bg-gradient-to-br from-[#0A8A54] to-[#0FA968]'
+              : 'bg-gradient-to-br from-[#8B0500] to-[#B20600]'
+          }`}
+        >
+          <div className={`absolute top-0 right-0 w-24 h-24 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-500 ${
+            stats.todayProfit >= 0 ? 'bg-white/10' : 'bg-white/10'
+          }`} />
+          <div className="relative">
+            <span className="text-2xl">📊</span>
+            <p className="text-xs text-white/70 font-medium mt-1">Today Profit</p>
+            <p className={`text-2xl font-bold mt-0.5 ${stats.todayProfit >= 0 ? '' : ''}`}>{formatINR(Math.abs(stats.todayProfit))}</p>
+            <p className={`text-xs font-semibold mt-1 ${stats.todayProfit >= 0 ? 'text-white/80' : 'text-white/80'}`}>
+              {stats.todayProfit >= 0 ? '✅ In profit' : '⚠️ In loss'}
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Pending */}
+        <motion.div
+          custom={3}
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          className="bg-gradient-to-br from-[#CC4D00] to-[#FF5F00] rounded-xl p-5 text-white relative overflow-hidden group cursor-pointer"
+        >
+          <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-500" />
+          <div className="relative">
+            <span className="text-2xl">⏳</span>
+            <p className="text-xs text-white/80 font-medium mt-1">Pending</p>
+            <p className="text-2xl font-bold mt-0.5">{stats.totalPendingItems}</p>
+            <p className="text-xs text-white/80 font-semibold mt-1">
+              {stats.repairNeededCount} repairs · {stats.salesByPayment.pending + stats.salesByPayment.partial} unpaid
+            </p>
+          </div>
+        </motion.div>
+      </div>
 
       {/* ═══════ Stat Cards ═══════ */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

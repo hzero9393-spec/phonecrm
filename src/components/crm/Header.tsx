@@ -13,17 +13,23 @@ const moduleTitles: Record<string, string> = {
   orders: 'Orders',
   shop: 'Shop Settings',
   admins: 'Admin Users',
+  profile: 'My Profile',
   settings: 'Settings',
 };
 
 export default function Header() {
-  const { currentModule, sidebarOpen, toggleSidebar, admin, setAdmin } = useCRMStore();
+  const { currentModule, sidebarOpen, toggleSidebar, admin, setAdmin, setCurrentModule } = useCRMStore();
   const [showLogout, setShowLogout] = React.useState(false);
 
   const handleLogout = () => {
     setAdmin(null);
     localStorage.removeItem('crm-auth-storage');
     window.location.reload();
+  };
+
+  const handleProfile = () => {
+    setCurrentModule('profile');
+    setShowLogout(false);
   };
 
   return (
@@ -61,7 +67,7 @@ export default function Header() {
 
           {showLogout && (
             <div className="absolute right-0 top-12 w-48 bg-white rounded-lg shadow-lg border border-[#D1D1D1] py-1 z-50">
-              <button className="flex items-center gap-2 w-full px-4 py-2 text-sm text-[#00092C] hover:bg-[#F0F0F0]">
+              <button onClick={handleProfile} className="flex items-center gap-2 w-full px-4 py-2 text-sm text-[#00092C] hover:bg-[#F0F0F0]">
                 <User size={16} />
                 Profile
               </button>
