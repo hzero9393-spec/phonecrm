@@ -325,3 +325,53 @@ Applied semantic color class replacements to both CRM module components for dark
 - Store icon: `text-white` → `text-primary-foreground`
 
 Verification: ESLint zero errors. Zero hardcoded hex color values remain in either file (verified via ripgrep). Dev server compiles successfully. All functionality preserved.
+
+---
+## Task ID: 18 - Main Agent
+### Work Task
+Build Reports and Print PDF modules for PhoneCRM - equivalent to PHP report.php and print_pdf.php.
+
+### Work Summary
+
+**Store Update:**
+- Added 'reports' and 'print-pdf' to Module type in `src/store/use-crm-store.ts`
+
+**Reports API (`/api/crm/reports`):**
+- `?type=buy&from=DATE&to=DATE` — Buy Report: count, total buy amount, repair costs, item-level table
+- `?type=sell&from=DATE&to=DATE` — Sell Report: count, total sell amount, paid/pending breakdown, item-level table
+- `?type=profit&from=DATE&to=DATE` — Profit/Loss: gross profit, net profit after repairs, margin %, unsold investment
+- `?type=top` — Top Reports: top 5 customers by purchase, top 5 brands by sales count, top 5 profit phones
+
+**Print API (`/api/crm/print`):**
+- `?type=invoice&invoiceNo=INV-xxx` — Invoice with shop letterhead, GST breakdown, customer details
+- `?type=customers` — Complete customer list with contact info, Aadhar, type
+- `?type=buysell&from=DATE&to=DATE` — Date-filtered buy/sell report with summary
+- `?type=stock` — Unsold inventory with days in stock calculation
+
+**Reports Module Component (`ReportsModule.tsx`):**
+- 4 tab sections: Buy Report, Sell Report, Profit/Loss, Top Reports
+- Date range picker with calendar icons, generate button
+- Buy Report: summary cards (count, total buy, repairs) + data table
+- Sell Report: summary cards (sold, total sell, received, pending) + data table
+- Profit/Loss: big profit/loss gradient card (green/red), detail grid, margin circle, unsold info
+- Top Reports: 3-column layout with ranked lists (customers, brands, profit phones)
+- Framer Motion animations, responsive design, semantic theme classes
+
+**Print PDF Module Component (`PrintPdfModule.tsx`):**
+- 4 print option cards with icons and descriptions
+- Print Invoice: search by invoice number → preview with shop letterhead → print window
+- Print Customer List: load all → formatted table → print window
+- Print Buy/Sell Report: date range → summary + buy/sell tables → print window
+- Print Stock Report: load unsold → days in stock with stale highlighting → print window
+- All print views open in new window with @media print CSS, professional letterhead styling
+
+**Navigation Updates:**
+- Sidebar: added Reports (TrendingUp icon) and Print/PDF (Printer icon) navigation items
+- Header: added module titles for reports and print-pdf
+- page.tsx: added imports and switch cases for both new modules
+
+**Verification:**
+- ESLint: zero errors
+- Dev server: compiles successfully
+- All 8 API endpoints tested and working (reports: buy, sell, profit, top; print: invoice, customers, buysell, stock)
+- Shop letterhead data correctly fetched and included in print views

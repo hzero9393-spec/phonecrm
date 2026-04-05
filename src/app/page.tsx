@@ -15,6 +15,8 @@ import OrdersModule from '@/components/crm/OrdersModule';
 import ShopSettings from '@/components/crm/ShopSettings';
 import AdminModule from '@/components/crm/AdminModule';
 import ProfileModule from '@/components/crm/ProfileModule';
+import ReportsModule from '@/components/crm/ReportsModule';
+import PrintPdfModule from '@/components/crm/PrintPdfModule';
 
 const emptySubscribe = () => () => {};
 
@@ -53,6 +55,10 @@ export default function CRMPage() {
         return <InvoicesModule />;
       case 'orders':
         return <OrdersModule />;
+      case 'reports':
+        return <ReportsModule />;
+      case 'print-pdf':
+        return <PrintPdfModule />;
       case 'shop':
         return <ShopSettings />;
       case 'admins':

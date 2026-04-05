@@ -17,6 +17,8 @@ export type Module =
   | 'sales'
   | 'invoices'
   | 'orders'
+  | 'reports'
+  | 'print-pdf'
   | 'shop'
   | 'admins'
   | 'profile'

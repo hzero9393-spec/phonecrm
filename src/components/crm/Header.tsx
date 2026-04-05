@@ -12,6 +12,8 @@ const moduleTitles: Record<string, string> = {
   sales: 'Sales',
   invoices: 'Invoices',
   orders: 'Orders',
+  reports: 'Reports & Analytics',
+  'print-pdf': 'Print & PDF Export',
   shop: 'Shop Settings',
   admins: 'Admin Users',
   profile: 'My Profile',

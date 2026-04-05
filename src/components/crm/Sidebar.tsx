@@ -14,6 +14,8 @@ import {
   UserCircle,
   X,
   LogOut,
+  TrendingUp,
+  Printer,
 } from 'lucide-react';
 
 const navItems: { key: Module; label: string; icon: React.ReactNode; roles?: string[] }[] = [
@@ -23,6 +25,8 @@ const navItems: { key: Module; label: string; icon: React.ReactNode; roles?: str
   { key: 'sales', label: 'Sales', icon: <Receipt size={19} /> },
   { key: 'invoices', label: 'Invoices', icon: <FileText size={19} /> },
   { key: 'orders', label: 'Orders', icon: <ShoppingBag size={19} /> },
+  { key: 'reports', label: 'Reports', icon: <TrendingUp size={19} /> },
+  { key: 'print-pdf', label: 'Print / PDF', icon: <Printer size={19} /> },
   { key: 'shop', label: 'Shop Settings', icon: <Store size={19} /> },
   { key: 'admins', label: 'Admin Users', icon: <Shield size={19} />, roles: ['master'] },
   { key: 'profile', label: 'My Profile', icon: <UserCircle size={19} /> },
