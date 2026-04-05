@@ -15,6 +15,7 @@ model Admin {
   fullName  String   @default("")
   mobile    String   @default("")
   email     String   @default("")
+  theme     String   @default("theme-blue") // 12 color themes
   createdBy String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
